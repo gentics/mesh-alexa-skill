@@ -9,8 +9,22 @@
 	<properties>
 		<vertx.version>3.7.0</vertx.version>
 		<mesh.version>0.32.0</mesh.version>
+		<graal.version>1.0.0-rc16</graal.version>
 		<dagger.version>2.22.1</dagger.version>
+		<mainClass>com.gentics.mesh.alexa.GenticsSkill</mainClass>
 	</properties>
+
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>io.vertx</groupId>
+				<artifactId>vertx-stack-depchain</artifactId>
+				<version>3.7.0</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
 
 	<licenses>
 		<license>
@@ -21,11 +35,18 @@
 	</licenses>
 
 	<dependencies>
+		<!-- For graalvm -->
+		<dependency>
+			<groupId>com.oracle.substratevm</groupId>
+			<artifactId>svm-driver</artifactId>
+			<version>${graal.version}</version>
+			<scope>provided</scope>
+		</dependency>
+
 		<!-- Vert.x -->
 		<dependency>
 			<groupId>io.vertx</groupId>
 			<artifactId>vertx-web</artifactId>
-			<version>${vertx.version}</version>
 		</dependency>
 
 		<!-- Dagger -->
@@ -127,6 +148,27 @@
 						</configuration>
 					</execution>
 				</executions>
+			</plugin>
+
+			<plugin>
+				<groupId>com.oracle.substratevm</groupId>
+				<artifactId>native-image-maven-plugin</artifactId>
+				<version>${graal.version}</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>native-image</goal>
+						</goals>
+						<phase>package</phase>
+					</execution>
+				</executions>
+				<configuration>
+					<imageName>mesh-alexa-skill-server</imageName>
+					<mainClass>${mainClass}</mainClass>
+					<buildArgs>--enable-all-security-services
+						-H:+ReportUnsupportedElementsAtRuntime
+						--allow-incomplete-classpath</buildArgs>
+				</configuration>
 			</plugin>
 		</plugins>
 	</build>

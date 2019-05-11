@@ -37,7 +37,7 @@ public class MeshConnector {
 		client.setLogin("admin", "admin");
 		client.login().blockingGet();
 		try {
-			searchVehicleQuery = new JsonObject(IOUtils.toString(this.getClass().getResourceAsStream("/searchVehicle.json"),
+			searchVehicleQuery = new JsonObject(IOUtils.toString(this.getClass().getResourceAsStream("/queries/searchVehicle.json"),
 				"UTF-8"));
 		} catch (Exception e) {
 			throw new RuntimeException("Could not find query");
