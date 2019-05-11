@@ -167,6 +167,8 @@
 					<mainClass>${mainClass}</mainClass>
 					<buildArgs>--enable-all-security-services
 						-H:+ReportUnsupportedElementsAtRuntime
+						--no-fallback
+						 -H:+AddAllCharsets
 						--allow-incomplete-classpath</buildArgs>
 				</configuration>
 			</plugin>

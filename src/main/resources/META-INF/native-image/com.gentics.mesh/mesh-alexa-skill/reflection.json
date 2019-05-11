@@ -17,7 +17,10 @@
     "name": "java.lang.Integer",
     "allDeclaredConstructors": true
   },
-
+  {
+    "name":"io.vertx.core.logging.SLF4JLogDelegateFactory",
+    "methods":[{"name":"<init>","parameterTypes":[] }]
+  },
   {
     "name": "com.gentics.mesh.alexa.GenticsSkill",
     "allDeclaredConstructors": true,
