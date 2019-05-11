@@ -1,6 +1,6 @@
-= Gentics Mesh Alexa Skill Server
+# Gentics Mesh Alexa Skill Server
 
-== Example Phrases
+## Example Phrases
 
 > Frag Gentics wieviele Tesla es noch gibt
 
@@ -8,7 +8,7 @@
 
 > Frag Gentics wieviel ein Tesla kostet
 
-== Topics
+## Topics
 
 * Skill Pre-requirements
 * Setup
