@@ -34,8 +34,6 @@ public class GenticsSkill {
 		log = LoggerFactory.getLogger(GenticsSkill.class);
 		SkillConfig config = new SkillConfig();
 		AppComponent app = DaggerAppComponent.builder().config(config).build();
-		String hello = I18NUtil.i18n(Locale.GERMAN, "welcome");
-		System.out.println(hello);
 		app.skill().run();
 	}
 
