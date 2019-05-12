@@ -1,6 +1,7 @@
 package com.gentics.mesh.alexa;
 
-import java.io.File;
+import static io.vertx.core.logging.LoggerFactory.LOGGER_DELEGATE_FACTORY_CLASS_NAME;
+
 import java.util.Locale;
 
 import javax.inject.Inject;
@@ -23,13 +24,11 @@ public class GenticsSkill {
 	public static final String SHOP_NAME = "Gentics Fahrzeug Shop";
 	public static final String SHOP_NAME_PHONETIC = "<phoneme alphabet=\"ipa\" ph=\"dʒɛˈntɪcs\"></phoneme> Fahrzeug Shop";
 
-	static {
-		System.setProperty(LoggerFactory.LOGGER_DELEGATE_FACTORY_CLASS_NAME, SLF4JLogDelegateFactory.class.getName());
-		File logbackFile = new File("config", "logback.xml");
-		System.setProperty("logback.configurationFile", logbackFile.getAbsolutePath());
-	}
-
 	private static Logger log;
+
+	static {
+		System.setProperty(LOGGER_DELEGATE_FACTORY_CLASS_NAME, SLF4JLogDelegateFactory.class.getName());
+	}
 
 	public static void main(String[] args) {
 		log = LoggerFactory.getLogger(GenticsSkill.class);

@@ -1,29 +1,5 @@
 [
   {
-    "name":"ch.qos.logback.classic.pattern.DateConverter",
-    "methods":[{"name":"<init>","parameterTypes":[] }]
-  },
-  {
-    "name":"ch.qos.logback.classic.pattern.LevelConverter",
-    "methods":[{"name":"<init>","parameterTypes":[] }]
-  },
-  {
-    "name":"ch.qos.logback.classic.pattern.LineSeparatorConverter",
-    "methods":[{"name":"<init>","parameterTypes":[] }]
-  },
-  {
-    "name":"ch.qos.logback.classic.pattern.LoggerConverter",
-    "methods":[{"name":"<init>","parameterTypes":[] }]
-  },
-  {
-    "name":"ch.qos.logback.classic.pattern.MessageConverter",
-    "methods":[{"name":"<init>","parameterTypes":[] }]
-  },
-  {
-    "name":"ch.qos.logback.classic.pattern.ThreadConverter",
-    "methods":[{"name":"<init>","parameterTypes":[] }]
-  },
-  {
     "name":"com.amazon.ask.model.Application$Builder",
     "allDeclaredFields":true,
     "allDeclaredMethods":true,
@@ -560,10 +536,6 @@
     "fields":[{"name":"producerLimit"}]
   },
   {
-    "name":"io.vertx.core.logging.SLF4JLogDelegateFactory",
-    "methods":[{"name":"<init>","parameterTypes":[] }]
-  },
-  {
     "name":"io.vertx.core.shareddata.Shareable",
     "allDeclaredMethods":true
   },
@@ -639,6 +611,14 @@
     "allDeclaredConstructors":true
   },
   {
+    "name":"org.apache.logging.log4j.message.DefaultFlowMessageFactory",
+    "methods":[{"name":"<init>","parameterTypes":[] }]
+  },
+  {
+    "name":"org.apache.logging.log4j.message.ReusableMessageFactory",
+    "methods":[{"name":"<init>","parameterTypes":[] }]
+  },
+  {
     "name":"sun.misc.Cleaner",
     "methods":[{"name":"clean","parameterTypes":[] }]
   },
@@ -660,6 +640,10 @@
       {"name":"publicSelectedKeys"}, 
       {"name":"selectedKeys"}
     ]
+  },
+  {
+    "name":"sun.reflect.Reflection",
+    "methods":[{"name":"getCallerClass","parameterTypes":["int"] }]
   }
   ]
   

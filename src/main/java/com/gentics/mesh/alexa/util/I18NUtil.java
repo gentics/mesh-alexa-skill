@@ -13,7 +13,7 @@ public class I18NUtil {
 
 	public static final String BUNDLENAME = "translations";
 
-	public static final Locale DEFAULT_LOCALE = new Locale("en", "US");
+	public static final Locale DEFAULT_LOCALE = new Locale("de", "DE");
 
 	/**
 	 * Return the i18n string for the given bundle, local and i18n key.
@@ -28,12 +28,10 @@ public class I18NUtil {
 		if (locale == null) {
 			locale = DEFAULT_LOCALE;
 		}
-		if (locale == null) {
-			locale = DEFAULT_LOCALE;
-		}
+		log.info("Using locale: " + locale.getLanguage() + "_" + locale.getCountry());
 		String i18nMessage = "";
 		try {
-			ResourceBundle labels = ResourceBundle.getBundle("i18n." + BUNDLENAME, locale, new UTF8Control());
+			ResourceBundle labels = ResourceBundle.getBundle("i18n." + BUNDLENAME, locale);
 			MessageFormat formatter = new MessageFormat("");
 			formatter.setLocale(locale);
 			formatter.applyPattern(labels.getString(key));
