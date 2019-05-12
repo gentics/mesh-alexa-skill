@@ -1,18 +1,19 @@
 package com.gentics.mesh.alexa;
 
 import java.io.File;
+import java.util.Locale;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
-
-import org.apache.log4j.Logger;
 
 import com.gentics.mesh.alexa.dagger.AppComponent;
 import com.gentics.mesh.alexa.dagger.DaggerAppComponent;
 import com.gentics.mesh.alexa.dagger.config.SkillConfig;
 import com.gentics.mesh.alexa.server.SkillServerVerticle;
+import com.gentics.mesh.alexa.util.I18NUtil;
 
 import io.vertx.core.Vertx;
+import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
 import io.vertx.core.logging.SLF4JLogDelegateFactory;
 
@@ -31,9 +32,11 @@ public class GenticsSkill {
 	private static Logger log;
 
 	public static void main(String[] args) {
-		log = Logger.getLogger(GenticsSkill.class);
+		log = LoggerFactory.getLogger(GenticsSkill.class);
 		SkillConfig config = new SkillConfig();
 		AppComponent app = DaggerAppComponent.builder().config(config).build();
+		String hello = I18NUtil.i18n(Locale.GERMAN, "welcome");
+		System.out.println(hello);
 		app.skill().run();
 	}
 

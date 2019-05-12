@@ -10,18 +10,19 @@ import java.util.Optional;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-import org.apache.log4j.Logger;
-
 import com.amazon.ask.dispatcher.request.handler.HandlerInput;
 import com.amazon.ask.model.Response;
 import com.amazon.ask.model.Slot;
 import com.gentics.mesh.alexa.action.MeshActions;
 import com.gentics.mesh.alexa.intent.AbstractGenticsIntent;
 
+import io.vertx.core.logging.Logger;
+import io.vertx.core.logging.LoggerFactory;
+
 @Singleton
 public class StockLevelIntentHandler extends AbstractGenticsIntent {
 
-	private static final Logger log = Logger.getLogger(StockLevelIntentHandler.class);
+	private static final Logger log = LoggerFactory.getLogger(StockLevelIntentHandler.class);
 
 	private MeshActions mesh;
 

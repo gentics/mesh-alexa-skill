@@ -4,12 +4,13 @@ import java.text.MessageFormat;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
-import org.apache.log4j.Logger;
+import io.vertx.core.logging.Logger;
+import io.vertx.core.logging.LoggerFactory;
 
 public class I18NUtil {
 
-	private static final Logger log = Logger.getLogger(I18NUtil.class);
-	
+	private static final Logger log = LoggerFactory.getLogger(I18NUtil.class);
+
 	public static final String BUNDLENAME = "translations";
 
 	public static final Locale DEFAULT_LOCALE = new Locale("en", "US");

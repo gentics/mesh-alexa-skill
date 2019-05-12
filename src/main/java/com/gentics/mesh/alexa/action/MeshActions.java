@@ -8,7 +8,6 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.log4j.Logger;
 
 import com.gentics.mesh.alexa.dagger.config.SkillConfig;
 import com.gentics.mesh.alexa.intent.impl.StockLevelIntentHandler;
@@ -21,11 +20,13 @@ import com.gentics.mesh.rest.client.MeshRestClient;
 import io.reactivex.Maybe;
 import io.reactivex.Single;
 import io.vertx.core.json.JsonObject;
+import io.vertx.core.logging.Logger;
+import io.vertx.core.logging.LoggerFactory;
 
 @Singleton
 public class MeshActions {
 
-	private static final Logger log = Logger.getLogger(StockLevelIntentHandler.class);
+	private static final Logger log = LoggerFactory.getLogger(StockLevelIntentHandler.class);
 
 	private final String PROJECT = "demo";
 

@@ -168,6 +168,7 @@
 					<buildArgs>--enable-all-security-services
 						-H:+ReportUnsupportedElementsAtRuntime
 						--no-fallback
+						--enable-all-security-services
 						 -H:+AddAllCharsets
 						--allow-incomplete-classpath</buildArgs>
 				</configuration>
