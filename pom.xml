@@ -14,6 +14,43 @@
 		<mainClass>com.gentics.mesh.alexa.GenticsSkill</mainClass>
 	</properties>
 
+	<profiles>
+		<profile>
+			<id>native</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>com.oracle.substratevm</groupId>
+						<artifactId>native-image-maven-plugin</artifactId>
+						<version>${graal.version}</version>
+						<executions>
+							<execution>
+								<goals>
+									<goal>native-image</goal>
+								</goals>
+								<phase>package</phase>
+							</execution>
+						</executions>
+						<configuration>
+							<imageName>mesh-alexa-skill-server</imageName>
+							<mainClass>${mainClass}</mainClass>
+							<buildArgs>--enable-all-security-services
+								-H:+ReportUnsupportedElementsAtRuntime
+								--no-fallback
+								-Duser.country=DE
+								-Duser.language=de
+								-Dfile.encoding=UTF-8
+								-H:+AddAllCharsets
+								--enable-https
+								--enable-http
+								--allow-incomplete-classpath</buildArgs>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
+
 	<dependencyManagement>
 		<dependencies>
 			<dependency>
@@ -136,33 +173,6 @@
 						</configuration>
 					</execution>
 				</executions>
-			</plugin>
-
-			<plugin>
-				<groupId>com.oracle.substratevm</groupId>
-				<artifactId>native-image-maven-plugin</artifactId>
-				<version>${graal.version}</version>
-				<executions>
-					<execution>
-						<goals>
-							<goal>native-image</goal>
-						</goals>
-						<phase>package</phase>
-					</execution>
-				</executions>
-				<configuration>
-					<imageName>mesh-alexa-skill-server</imageName>
-					<mainClass>${mainClass}</mainClass>
-					<buildArgs>--enable-all-security-services
-						-H:+ReportUnsupportedElementsAtRuntime
-						--no-fallback
-						-Duser.country=DE
-						-Duser.language=de
-						-Dfile.encoding=UTF-8
-						--enable-all-security-services
-						 -H:+AddAllCharsets
-						--allow-incomplete-classpath</buildArgs>
-				</configuration>
 			</plugin>
 		</plugins>
 	</build>

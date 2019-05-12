@@ -2,8 +2,6 @@ package com.gentics.mesh.alexa;
 
 import static io.vertx.core.logging.LoggerFactory.LOGGER_DELEGATE_FACTORY_CLASS_NAME;
 
-import java.util.Locale;
-
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
@@ -11,7 +9,6 @@ import com.gentics.mesh.alexa.dagger.AppComponent;
 import com.gentics.mesh.alexa.dagger.DaggerAppComponent;
 import com.gentics.mesh.alexa.dagger.config.SkillConfig;
 import com.gentics.mesh.alexa.server.SkillServerVerticle;
-import com.gentics.mesh.alexa.util.I18NUtil;
 
 import io.vertx.core.Vertx;
 import io.vertx.core.logging.Logger;
@@ -33,8 +30,31 @@ public class GenticsSkill {
 	public static void main(String[] args) {
 		log = LoggerFactory.getLogger(GenticsSkill.class);
 		SkillConfig config = new SkillConfig();
+		applyEnv(config);
 		AppComponent app = DaggerAppComponent.builder().config(config).build();
 		app.skill().run();
+	}
+
+	private static void applyEnv(SkillConfig config) {
+		String host = System.getenv("MESH_HOST");
+		if (host != null) {
+			config.setHost(host);
+		}
+
+		String port = System.getenv("MESH_PORT");
+		if (port != null) {
+			config.setPort(Integer.parseInt(port));
+		}
+
+		String ssl = System.getenv("MESH_SSL");
+		if (ssl != null) {
+			config.setSsl(Boolean.parseBoolean(ssl));
+		}
+
+		String key = System.getenv("MESH_APIKEY");
+		if (key != null) {
+			config.setMeshApiKey(key);
+		}
 	}
 
 	private Vertx vertx;

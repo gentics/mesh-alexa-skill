@@ -3,36 +3,32 @@ import com.oracle.svm.core.annotate.*;
 import org.graalvm.nativeimage.*;
 
 /**
- * This substitution allows the usage of platform specific code to do low level
- * buffer related tasks
+ * This substitution allows the usage of platform specific code to do low level buffer related tasks
  */
 @TargetClass(className = "io.netty.util.internal.CleanerJava6")
 final class Target_io_netty_util_internal_CleanerJava6 {
 
-    @Alias
-    @RecomputeFieldValue(kind = RecomputeFieldValue.Kind.FieldOffset, declClassName = "java.nio.DirectByteBuffer", name = "cleaner")
-    private static long CLEANER_FIELD_OFFSET;
+	@Alias
+	@RecomputeFieldValue(kind = RecomputeFieldValue.Kind.FieldOffset, declClassName = "java.nio.DirectByteBuffer", name = "cleaner")
+	private static long CLEANER_FIELD_OFFSET;
 }
 
 /**
- * This substitution allows the usage of platform specific code to do low level
- * buffer related tasks
+ * This substitution allows the usage of platform specific code to do low level buffer related tasks
  */
 @TargetClass(className = "io.netty.util.internal.PlatformDependent0")
 final class Target_io_netty_util_internal_PlatformDependent0 {
 
-    @Alias
-    @RecomputeFieldValue(kind = RecomputeFieldValue.Kind.FieldOffset, declClassName = "java.nio.Buffer", name = "address")
-    private static long ADDRESS_FIELD_OFFSET;
+	@Alias
+	@RecomputeFieldValue(kind = RecomputeFieldValue.Kind.FieldOffset, declClassName = "java.nio.Buffer", name = "address")
+	private static long ADDRESS_FIELD_OFFSET;
 }
 
 @TargetClass(className = "io.netty.util.internal.PlatformDependent")
 final class Target_io_netty_util_internal_PlatformDependent {
 	/**
-	 * The class PlatformDependent caches the byte array base offset by reading the
-	 * field from PlatformDependent0. The automatic recomputation of Substrate VM
-	 * correctly recomputes the field in PlatformDependent0, but since the caching
-	 * in PlatformDependent happens during image building, the non-recomputed value
+	 * The class PlatformDependent caches the byte array base offset by reading the field from PlatformDependent0. The automatic recomputation of Substrate VM
+	 * correctly recomputes the field in PlatformDependent0, but since the caching in PlatformDependent happens during image building, the non-recomputed value
 	 * is cached.
 	 */
 	@Alias
@@ -41,15 +37,14 @@ final class Target_io_netty_util_internal_PlatformDependent {
 }
 
 /**
- * This substitution allows the usage of platform specific code to do low level
- * buffer related tasks
+ * This substitution allows the usage of platform specific code to do low level buffer related tasks
  */
 @TargetClass(className = "io.netty.util.internal.shaded.org.jctools.util.UnsafeRefArrayAccess")
 final class Target_io_netty_util_internal_shaded_org_jctools_util_UnsafeRefArrayAccess {
 
-    @Alias
-    @RecomputeFieldValue(kind = RecomputeFieldValue.Kind.ArrayIndexShift, declClass = Object[].class)
-    public static int REF_ELEMENT_SHIFT;
+	@Alias
+	@RecomputeFieldValue(kind = RecomputeFieldValue.Kind.ArrayIndexShift, declClass = Object[].class)
+	public static int REF_ELEMENT_SHIFT;
 }
 
 /**
@@ -58,41 +53,48 @@ final class Target_io_netty_util_internal_shaded_org_jctools_util_UnsafeRefArray
 @TargetClass(className = "io.vertx.core.spi.resolver.ResolverProvider")
 final class Target_io_vertx_core_spi_resolver_ResolverProvider {
 
-    @Substitute
-    public static io.vertx.core.spi.resolver.ResolverProvider factory(io.vertx.core.Vertx vertx, io.vertx.core.dns.AddressResolverOptions options) {
-        return new io.vertx.core.impl.resolver.DefaultResolverProvider();
-    }
+	@Substitute
+	public static io.vertx.core.spi.resolver.ResolverProvider factory(io.vertx.core.Vertx vertx, io.vertx.core.dns.AddressResolverOptions options) {
+		return new io.vertx.core.impl.resolver.DefaultResolverProvider();
+	}
 }
 
 @AutomaticFeature
 class RuntimeReflectionRegistrationFeature implements Feature {
-  public void beforeAnalysis(BeforeAnalysisAccess access) {
-    try {
-      // json types
-      RuntimeReflection.register(java.util.ArrayList.class.getDeclaredConstructor());
-      RuntimeReflection.register(java.util.LinkedHashMap.class.getDeclaredConstructor());
 
-      // commands
-      RuntimeReflection.register(io.vertx.core.impl.launcher.commands.RunCommand.class);
-      RuntimeReflection.register(io.vertx.core.impl.launcher.commands.RunCommand.class.getDeclaredConstructors());
-      RuntimeReflection.register(io.vertx.core.impl.launcher.commands.RunCommand.class.getDeclaredMethods());
+//	@Override
+//	public void duringSetup(DuringSetupAccess access) {
+//		System.loadLibrary("sunec");
+//	}
 
-      RuntimeReflection.register(io.vertx.core.impl.launcher.commands.VertxIsolatedDeployer.class);
-      RuntimeReflection.register(io.vertx.core.impl.launcher.commands.VertxIsolatedDeployer.class.getDeclaredConstructors());
-      RuntimeReflection.register(io.vertx.core.impl.launcher.commands.VertxIsolatedDeployer.class.getDeclaredMethods());
+	public void beforeAnalysis(BeforeAnalysisAccess access) {
 
-      // launcher reflection
-      RuntimeReflection.register(java.lang.Long.class);
-      RuntimeReflection.register(java.lang.Long.class.getDeclaredConstructors());
+		try {
+			// json types
+			RuntimeReflection.register(java.util.ArrayList.class.getDeclaredConstructor());
+			RuntimeReflection.register(java.util.LinkedHashMap.class.getDeclaredConstructor());
 
-      RuntimeReflection.register(java.lang.Integer.class);
-      RuntimeReflection.register(java.lang.Integer.class.getDeclaredConstructors());
+			// commands
+			RuntimeReflection.register(io.vertx.core.impl.launcher.commands.RunCommand.class);
+			RuntimeReflection.register(io.vertx.core.impl.launcher.commands.RunCommand.class.getDeclaredConstructors());
+			RuntimeReflection.register(io.vertx.core.impl.launcher.commands.RunCommand.class.getDeclaredMethods());
 
-      // extras (grpc seems to need this)
-      RuntimeReflection.register(io.netty.channel.socket.nio.NioServerSocketChannel.class.getDeclaredConstructor());
+			RuntimeReflection.register(io.vertx.core.impl.launcher.commands.VertxIsolatedDeployer.class);
+			RuntimeReflection.register(io.vertx.core.impl.launcher.commands.VertxIsolatedDeployer.class.getDeclaredConstructors());
+			RuntimeReflection.register(io.vertx.core.impl.launcher.commands.VertxIsolatedDeployer.class.getDeclaredMethods());
 
-    } catch (NoSuchMethodException e) {
-      throw new RuntimeException(e);
-    }
-  }
+			// launcher reflection
+			RuntimeReflection.register(java.lang.Long.class);
+			RuntimeReflection.register(java.lang.Long.class.getDeclaredConstructors());
+
+			RuntimeReflection.register(java.lang.Integer.class);
+			RuntimeReflection.register(java.lang.Integer.class.getDeclaredConstructors());
+
+			// extras (grpc seems to need this)
+			RuntimeReflection.register(io.netty.channel.socket.nio.NioServerSocketChannel.class.getDeclaredConstructor());
+
+		} catch (NoSuchMethodException e) {
+			throw new RuntimeException(e);
+		}
+	}
 }
