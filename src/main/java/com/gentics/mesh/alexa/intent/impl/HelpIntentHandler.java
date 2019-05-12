@@ -1,14 +1,17 @@
 package com.gentics.mesh.alexa.intent.impl;
 
 import static com.amazon.ask.request.Predicates.intentName;
+import static com.gentics.mesh.alexa.GenticsSkill.SHOP_NAME;
+import static com.gentics.mesh.alexa.util.I18NUtil.i18n;
 
+import java.util.Locale;
 import java.util.Optional;
 
 import com.amazon.ask.dispatcher.request.handler.HandlerInput;
-import com.amazon.ask.dispatcher.request.handler.RequestHandler;
 import com.amazon.ask.model.Response;
+import com.gentics.mesh.alexa.intent.AbstractGenticsIntent;
 
-public class HelpIntentHandler implements RequestHandler {
+public class HelpIntentHandler extends AbstractGenticsIntent {
 
 	@Override
 	public boolean canHandle(HandlerInput input) {
@@ -17,12 +20,13 @@ public class HelpIntentHandler implements RequestHandler {
 
 	@Override
 	public Optional<Response> handle(HandlerInput input) {
-		String speechText = "Sie können mich bitten ein Fahrzeug zu reservieren oder sich über den Bestand erkundigen. Ich kann ihnen auch sagen wie teuer ein Fahrzeug derzeit ist."+ 
-	"Fragen Sie mich doch zum Beispiel: Reservier einen Tesla für mich. Oder aber wieviele teslas sind noch verfügbar? Oder was kostet ein tesla?";
+		Locale locale = getLocale(input);
+		String speechText = i18n(locale, "help");
+
 		return input.getResponseBuilder()
 			.withSpeech(speechText)
-			.withSimpleCard("Gentics Fahrzeug Shop", speechText)
-			.withReprompt(speechText)
+			.withSimpleCard(SHOP_NAME, speechText)
+			.withReprompt(i18n(locale, "fallback_answer"))
 			.build();
 	}
 }

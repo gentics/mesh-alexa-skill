@@ -1,5 +1,9 @@
 package com.gentics.mesh.alexa.action;
 
+import static com.gentics.mesh.alexa.util.I18NUtil.i18n;
+
+import java.util.Locale;
+
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
@@ -15,10 +19,11 @@ import com.gentics.mesh.core.rest.node.field.impl.NumberFieldImpl;
 import com.gentics.mesh.rest.client.MeshRestClient;
 
 import io.reactivex.Maybe;
+import io.reactivex.Single;
 import io.vertx.core.json.JsonObject;
 
 @Singleton
-public class MeshConnector {
+public class MeshActions {
 
 	private static final Logger log = Logger.getLogger(StockLevelIntentHandler.class);
 
@@ -31,72 +36,84 @@ public class MeshConnector {
 	private SkillConfig config;
 
 	@Inject
-	public MeshConnector(SkillConfig config) {
+	public MeshActions(SkillConfig config) {
 		this.config = config;
 		client = MeshRestClient.create("demo.getmesh.io", 443, true);
-		client.setLogin("admin", "admin");
-		client.login().blockingGet();
+		String apiKey = config.getMeshApiKey();
+		if (apiKey != null) {
+			client.setAPIKey(apiKey);
+		} else {
+			client.setLogin("admin", "admin");
+			client.login().blockingGet();
+		}
 		try {
 			searchVehicleQuery = new JsonObject(IOUtils.toString(this.getClass().getResourceAsStream("/queries/searchVehicle.json"),
 				"UTF-8"));
 		} catch (Exception e) {
-			throw new RuntimeException("Could not find query");
+			throw new RuntimeException("Could not find query.");
 		}
 	}
 
-	public Maybe<String> loadStockLevel(String vehicleName) {
+	public Single<String> loadStockLevel(Locale locale, String vehicleName) {
 		return locateVehicle(vehicleName).map(node -> {
 			Long level = getStockLevel(node);
 			if (level == null || level == 0) {
-				return "Es tut mir leid. Derzeit gibt es Fahrzeuge von dieser Art verfügbar.";
+				return i18n(locale, "vehicle_out_of_stock", getName(node));
+			} else if (level == 1) {
+				return i18n(locale, "vehicle_stock_level_one", getName(node));
 			} else {
-				return "Derzeit gibt es noch " + level + " Fahrzeuge dieser Art in unserem Shop.";
+				return i18n(locale, "vehicle_stock_level", String.valueOf(level));
 			}
-		}).defaultIfEmpty("Tut mir leid. Ich konnte das Fahrzeug nicht im Shop finden");
+		})
+			.onErrorReturnItem(i18n(locale, "vehicle_stock_level_error"))
+			.defaultIfEmpty(i18n(locale, "vehicle_not_found"))
+			.toSingle();
 	}
 
-	private Maybe<String> loadStockLevelForUuid(String uuid) {
-		return client.findNodeByUuid(PROJECT, uuid).toMaybe().map(node -> {
-			return "Noch " + getStockLevel(node);
-		});
-	}
-
-	private Long getStockLevel(NodeResponse response) {
-		Number number = response.getFields().getNumberField("stocklevel").getNumber();
-		if (number == null) {
-			return null;
-		}
-		return number.longValue();
-	}
-
-	public Maybe<String> reserveVehicle(String vehicleName) {
+	public Single<String> reserveVehicle(Locale locale, String vehicleName) {
 		return locateVehicle(vehicleName).flatMap(node -> {
 			Long level = getStockLevel(node);
 			String name = node.getFields().getStringField("name").getString();
 			if (level == null || level <= 0) {
-				return Maybe.just("Tut mir leid. Das Fahrzeug " + name + " ist leider nicht mehr verfügbar.");
+				return Maybe.just(i18n(locale, "vehicle_out_of_stock", name));
 			}
 			long newLevel = level - 1;
 			NodeUpdateRequest request = node.toRequest();
 			request.getFields().put("stocklevel", new NumberFieldImpl().setNumber(newLevel));
-			return client.updateNode(PROJECT, node.getUuid(), request).toMaybe().map(n -> {
-				return "Vielen Dank. Ich habe ein " + name + " Fahrzeug für Sie reserviert.";
-			})
-				.defaultIfEmpty("Tut mir leid. Ich konnte das Fahrzeug nicht im Shop finden")
-				.onErrorReturnItem("Tut mir leid. Ich konnte das Fahrzeug nicht reservieren. Versuchen Sie es bitte später nocheinmal.");
-		});
+			return client.updateNode(PROJECT, node.getUuid(), request).toSingle().map(n -> {
+				return i18n(locale, "vehicle_reserved", name);
+			}).toMaybe();
+
+		})
+			.defaultIfEmpty(i18n(locale, "vehicle_not_found"))
+			.onErrorReturnItem(i18n(locale, "vehicle_reserve_error"))
+			.toSingle();
 	}
 
-	public Maybe<String> loadVehiclePrice(String vehicleName) {
+	public Single<String> loadVehiclePrice(Locale locale, String vehicleName) {
 		return locateVehicle(vehicleName).map(node -> {
 			NumberFieldImpl price = node.getFields().getNumberField("price");
 			double value = price.getNumber().doubleValue();
-			String name = node.getFields().getStringField("name").getString();
-			return "Der Preis für das Fahrzeug " + name + " beträgt " + value + " Euro";
-		}).onErrorReturnItem("Tut mir leid. Ich konnte leider den Preis für das Fahrzeug " + vehicleName + " nicht finden.");
+			String priceStr = String.format("%.2f Euro", value);
+			String name = getName(node);
+			log.info("Located vehicle for " + vehicleName + " => " + name);
+			return i18n(locale, "vehicle_price", name, priceStr);
+		})
+			.defaultIfEmpty(i18n(locale, "vehicle_not_found"))
+			.onErrorReturnItem(i18n(locale, "vehicle_price_not_found", vehicleName))
+			.toSingle();
+	}
+
+	private Single<String> loadStockLevelForUuid(String uuid) {
+		return client.findNodeByUuid(PROJECT, uuid).toSingle().map(node -> {
+			return "Noch " + getStockLevel(node);
+		});
 	}
 
 	private Maybe<NodeResponse> locateVehicle(String vehicleName) {
+		if (vehicleName == null) {
+			return Maybe.empty();
+		}
 		JsonObject query = new JsonObject(searchVehicleQuery.encode());
 		query.getJsonObject("query").getJsonObject("bool").getJsonArray("must").getJsonObject(1).getJsonObject("match").put("fields.name",
 			vehicleName.toLowerCase());
@@ -113,5 +130,17 @@ public class MeshConnector {
 					return Maybe.just(list.getData().get(0));
 				}
 			});
+	}
+
+	private Long getStockLevel(NodeResponse response) {
+		Number number = response.getFields().getNumberField("stocklevel").getNumber();
+		if (number == null) {
+			return null;
+		}
+		return number.longValue();
+	}
+
+	private String getName(NodeResponse node) {
+		return node.getFields().getStringField("name").getString();
 	}
 }

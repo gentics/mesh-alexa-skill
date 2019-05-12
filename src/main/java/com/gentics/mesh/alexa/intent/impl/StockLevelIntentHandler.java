@@ -2,8 +2,9 @@ package com.gentics.mesh.alexa.intent.impl;
 
 import static com.amazon.ask.request.Predicates.intentName;
 import static com.gentics.mesh.alexa.GenticsSkill.SHOP_NAME;
+import static com.gentics.mesh.alexa.util.I18NUtil.i18n;
 
-import java.util.Map;
+import java.util.Locale;
 import java.util.Optional;
 
 import javax.inject.Inject;
@@ -12,24 +13,20 @@ import javax.inject.Singleton;
 import org.apache.log4j.Logger;
 
 import com.amazon.ask.dispatcher.request.handler.HandlerInput;
-import com.amazon.ask.model.Intent;
-import com.amazon.ask.model.IntentRequest;
-import com.amazon.ask.model.Request;
 import com.amazon.ask.model.Response;
 import com.amazon.ask.model.Slot;
-import com.gentics.mesh.alexa.action.MeshConnector;
-import com.gentics.mesh.alexa.intent.AbstractVehicleIntent;
-import com.gentics.mesh.alexa.intent.SkillIntentHandler;
+import com.gentics.mesh.alexa.action.MeshActions;
+import com.gentics.mesh.alexa.intent.AbstractGenticsIntent;
 
 @Singleton
-public class StockLevelIntentHandler extends AbstractVehicleIntent {
+public class StockLevelIntentHandler extends AbstractGenticsIntent {
 
 	private static final Logger log = Logger.getLogger(StockLevelIntentHandler.class);
 
-	private MeshConnector mesh;
+	private MeshActions mesh;
 
 	@Inject
-	public StockLevelIntentHandler(MeshConnector mesh) {
+	public StockLevelIntentHandler(MeshActions mesh) {
 		this.mesh = mesh;
 	}
 
@@ -41,26 +38,26 @@ public class StockLevelIntentHandler extends AbstractVehicleIntent {
 	@Override
 	public Optional<Response> handle(HandlerInput input) {
 		String speechText;
-		Request request = input.getRequestEnvelope().getRequest();
-		IntentRequest intentRequest = (IntentRequest) request;
-		Intent intent = intentRequest.getIntent();
-		Map<String, Slot> slots = intent.getSlots();
-		Slot vehicleSlot = slots.get(SkillIntentHandler.VEHICLE_SLOT);
+		Locale locale = getLocale(input);
+		Slot vehicleSlot = getVehicleSlot(input);
+
 		if (vehicleSlot == null) {
 			log.info("Slot not found in request");
-			speechText = SORRY_VEHICLE_NOT_FOUND;
+			speechText = i18n(locale, "vehicle_not_found");
 		} else {
 			String name = vehicleSlot.getValue();
 			if (name == null) {
-				speechText = SORRY_VEHICLE_NOT_FOUND;
+				speechText = i18n(locale, "vehicle_not_found");
 			} else {
-				speechText = mesh.loadStockLevel(name).blockingGet();
+				speechText = mesh.loadStockLevel(locale, name).blockingGet();
 			}
 		}
 
 		return input.getResponseBuilder()
 			.withSpeech(speechText)
 			.withSimpleCard(SHOP_NAME, speechText)
+			.withReprompt(i18n(locale, "fallback_answer"))
+			.withShouldEndSession(false)
 			.build();
 	}
 

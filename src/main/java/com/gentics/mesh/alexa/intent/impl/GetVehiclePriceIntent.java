@@ -2,29 +2,27 @@ package com.gentics.mesh.alexa.intent.impl;
 
 import static com.amazon.ask.request.Predicates.intentName;
 import static com.gentics.mesh.alexa.GenticsSkill.SHOP_NAME;
+import static com.gentics.mesh.alexa.util.I18NUtil.i18n;
 
-import java.util.Map;
+import java.util.Locale;
 import java.util.Optional;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import com.amazon.ask.dispatcher.request.handler.HandlerInput;
-import com.amazon.ask.model.Intent;
-import com.amazon.ask.model.IntentRequest;
-import com.amazon.ask.model.Request;
 import com.amazon.ask.model.Response;
 import com.amazon.ask.model.Slot;
-import com.gentics.mesh.alexa.action.MeshConnector;
-import com.gentics.mesh.alexa.intent.AbstractVehicleIntent;
+import com.gentics.mesh.alexa.action.MeshActions;
+import com.gentics.mesh.alexa.intent.AbstractGenticsIntent;
 
 @Singleton
-public class GetVehiclePriceIntent extends AbstractVehicleIntent {
+public class GetVehiclePriceIntent extends AbstractGenticsIntent {
 
-	private final MeshConnector mesh;
+	private final MeshActions mesh;
 
 	@Inject
-	public GetVehiclePriceIntent(MeshConnector mesh) {
+	public GetVehiclePriceIntent(MeshActions mesh) {
 		this.mesh = mesh;
 	}
 
@@ -36,21 +34,21 @@ public class GetVehiclePriceIntent extends AbstractVehicleIntent {
 	@Override
 	public Optional<Response> handle(HandlerInput input) {
 		String speechText;
-		Request request = input.getRequestEnvelope().getRequest();
-		IntentRequest intentRequest = (IntentRequest) request;
-		Intent intent = intentRequest.getIntent();
-		Map<String, Slot> slots = intent.getSlots();
-		Slot vehicleSlot = slots.get("vehicle");
+		Locale locale = getLocale(input);
+		Slot vehicleSlot = getVehicleSlot(input);
+
 		if (vehicleSlot == null) {
-			speechText = SORRY_VEHICLE_NOT_FOUND;
+			speechText = i18n(locale, "vehicle_not_found");
 		} else {
 			String name = vehicleSlot.getValue();
-			speechText =  mesh.loadVehiclePrice(name).blockingGet();
+			speechText = mesh.loadVehiclePrice(locale, name).blockingGet();
 		}
+
 		return input.getResponseBuilder()
 			.withSpeech(speechText)
 			.withSimpleCard(SHOP_NAME, speechText)
-			.withReprompt(speechText)
+			.withShouldEndSession(false)
+			.withReprompt(i18n(locale, "fallback_answer"))
 			.build();
 
 	}
