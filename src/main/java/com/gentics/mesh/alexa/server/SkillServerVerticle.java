@@ -5,6 +5,10 @@ import java.io.IOException;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.gentics.mesh.alexa.GenticsSkill;
 import com.gentics.mesh.alexa.intent.SkillIntentHandler;
 
 import io.vertx.core.AbstractVerticle;
@@ -14,15 +18,18 @@ import io.vertx.core.http.HttpServer;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.handler.BodyHandler;
+import io.vertx.ext.web.handler.LoggerHandler;
 
 @Singleton
 public class SkillServerVerticle extends AbstractVerticle {
+
+	public static final Logger log = LoggerFactory.getLogger(GenticsSkill.class);
 
 	private HttpServer server;
 	private SkillIntentHandler intentHandler;
 
 	@Inject
-	public SkillServerVerticle( SkillIntentHandler intentHandler) {
+	public SkillServerVerticle(SkillIntentHandler intentHandler) {
 		this.intentHandler = intentHandler;
 	}
 
@@ -32,12 +39,14 @@ public class SkillServerVerticle extends AbstractVerticle {
 
 		addRoutes(router);
 
+		int port = 4445;
 		server = vertx.createHttpServer()
 			.requestHandler(router::handle)
-			.listen(4445, lh -> {
+			.listen(port, lh -> {
 				if (lh.failed()) {
 					startFuture.fail(lh.cause());
 				} else {
+					log.info("Server started on port {" + port + "}");
 					startFuture.complete();
 				}
 			});
@@ -55,7 +64,8 @@ public class SkillServerVerticle extends AbstractVerticle {
 	}
 
 	private void addRoutes(Router router) {
-		router.route("/alexa").handler(BodyHandler.create());
+		router.route().handler(LoggerHandler.create());
+		router.route().handler(BodyHandler.create());
 		router.route().failureHandler(f -> {
 			f.failure().printStackTrace();
 			f.next();
@@ -66,7 +76,6 @@ public class SkillServerVerticle extends AbstractVerticle {
 		});
 
 		router.route("/alexa").handler(rh -> {
-			System.out.println("Request");
 			JsonObject json = rh.getBodyAsJson();
 			try {
 				intentHandler.handleRequest(json, sr -> {

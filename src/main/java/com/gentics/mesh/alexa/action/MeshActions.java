@@ -34,11 +34,8 @@ public class MeshActions {
 
 	private final JsonObject searchVehicleQuery;
 
-	private SkillConfig config;
-
 	@Inject
 	public MeshActions(SkillConfig config) {
-		this.config = config;
 		client = MeshRestClient.create(config.getHost(), config.getPort(), config.isSsl());
 		String apiKey = config.getMeshApiKey();
 		if (apiKey != null) {
@@ -103,12 +100,6 @@ public class MeshActions {
 			.defaultIfEmpty(i18n(locale, "vehicle_not_found"))
 			.onErrorReturnItem(i18n(locale, "vehicle_price_not_found", vehicleName))
 			.toSingle();
-	}
-
-	private Single<String> loadStockLevelForUuid(String uuid) {
-		return client.findNodeByUuid(PROJECT, uuid).toSingle().map(node -> {
-			return "Noch " + getStockLevel(node);
-		});
 	}
 
 	private Maybe<NodeResponse> locateVehicle(String vehicleName) {

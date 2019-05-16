@@ -5,6 +5,9 @@ import static io.vertx.core.logging.LoggerFactory.LOGGER_DELEGATE_FACTORY_CLASS_
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.core.config.Configurator;
+
 import com.gentics.mesh.alexa.dagger.AppComponent;
 import com.gentics.mesh.alexa.dagger.DaggerAppComponent;
 import com.gentics.mesh.alexa.dagger.config.SkillConfig;
@@ -22,18 +25,29 @@ public class GenticsSkill {
 
 	private static Logger log;
 
-	static {
-		System.setProperty(LOGGER_DELEGATE_FACTORY_CLASS_NAME, Log4j2LogDelegateFactory.class.getName());
-	}
-
 	public static void main(String[] args) {
+		initLogger();
+
 		log = LoggerFactory.getLogger(GenticsSkill.class);
+		log.info("Logging system initialized");
+
 		SkillConfig config = new SkillConfig();
 		applyEnv(config);
 		AppComponent app = DaggerAppComponent.builder().config(config).build();
 		app.skill().run();
 	}
 
+	private static void initLogger() {
+		Configurator.setRootLevel(Level.DEBUG);
+		System.setProperty(LOGGER_DELEGATE_FACTORY_CLASS_NAME, Log4j2LogDelegateFactory.class.getName());
+		LoggerFactory.initialise();
+	}
+
+	/**
+	 * Override configuration with environment variables.
+	 * 
+	 * @param config
+	 */
 	private static void applyEnv(SkillConfig config) {
 		String host = System.getenv("MESH_HOST");
 		if (host != null) {

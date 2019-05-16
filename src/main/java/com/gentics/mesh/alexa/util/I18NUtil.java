@@ -4,12 +4,12 @@ import java.text.MessageFormat;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
-import io.vertx.core.logging.Logger;
-import io.vertx.core.logging.LoggerFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class I18NUtil {
 
-	private static final Logger log = LoggerFactory.getLogger(I18NUtil.class);
+	public static final Logger log = LoggerFactory.getLogger(I18NUtil.class);
 
 	public static final String BUNDLENAME = "translations";
 
@@ -29,10 +29,12 @@ public class I18NUtil {
 			log.debug("Locale not specified. Using default locale {" + DEFAULT_LOCALE + "}");
 			locale = DEFAULT_LOCALE;
 		}
+		System.out.println("Using locale: " + locale.getLanguage() + "_" + locale.getCountry());
 		log.info("Using locale: " + locale.getLanguage() + "_" + locale.getCountry());
 		String i18nMessage = "";
 		try {
 			ResourceBundle labels = ResourceBundle.getBundle("i18n." + BUNDLENAME, locale);
+			System.out.println("Found bundle: " + labels.getLocale());
 			MessageFormat formatter = new MessageFormat("");
 			formatter.setLocale(locale);
 			formatter.applyPattern(labels.getString(key));

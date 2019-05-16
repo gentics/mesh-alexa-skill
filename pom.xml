@@ -70,8 +70,7 @@
 								-H:+ReportExceptionStackTraces
 								--no-fallback
 								-H:ResourceConfigurationFiles=${basedir}/svm/resources.json
-								-Duser.country=DE
-								-Duser.language=de
+								-Dlog4j2.jmx.disable=true
 								-Dfile.encoding=UTF-8
 								-H:+AddAllCharsets
 								--enable-https
@@ -131,6 +130,12 @@
 			<groupId>com.gentics.mesh</groupId>
 			<artifactId>mesh-rest-client</artifactId>
 			<version>${mesh.version}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.raml</groupId>
+					<artifactId>raml-parser</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 
 		<!-- Logging -->
@@ -155,6 +160,22 @@
 			<groupId>com.amazon.alexa</groupId>
 			<artifactId>ask-sdk</artifactId>
 			<version>2.17.2</version>
+			<exclusions>
+				<exclusion>
+					<groupId>com.amazon.alexa</groupId>
+					<artifactId>
+						ask-sdk-dynamodb-persistence-adapter
+					</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>com.amazon.alexa</groupId>
+					<artifactId>ask-sdk-servlet-support</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>com.amazon.alexa</groupId>
+					<artifactId>ask-sdk-lambda-support</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 
 		<!-- Utils -->

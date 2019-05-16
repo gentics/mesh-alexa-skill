@@ -1,5 +1,8 @@
 package com.gentics.mesh.alexa.dagger.config;
 
+/**
+ * Skill server configuration POJO.
+ */
 public class SkillConfig {
 
 	private String meshApiKey;
