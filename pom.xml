@@ -69,6 +69,8 @@
 								-H:+ReportUnsupportedElementsAtRuntime
 								-H:+ReportExceptionStackTraces
 								--no-fallback
+								-Duser.country=GB
+								-Duser.language=en
 								-H:ResourceConfigurationFiles=${basedir}/svm/resources.json
 								-Dlog4j2.jmx.disable=true
 								-Dfile.encoding=UTF-8

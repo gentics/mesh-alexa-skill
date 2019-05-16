@@ -29,12 +29,10 @@ public class I18NUtil {
 			log.debug("Locale not specified. Using default locale {" + DEFAULT_LOCALE + "}");
 			locale = DEFAULT_LOCALE;
 		}
-		System.out.println("Using locale: " + locale.getLanguage() + "_" + locale.getCountry());
 		log.info("Using locale: " + locale.getLanguage() + "_" + locale.getCountry());
 		String i18nMessage = "";
 		try {
 			ResourceBundle labels = ResourceBundle.getBundle("i18n." + BUNDLENAME, locale);
-			System.out.println("Found bundle: " + labels.getLocale());
 			MessageFormat formatter = new MessageFormat("");
 			formatter.setLocale(locale);
 			formatter.applyPattern(labels.getString(key));
