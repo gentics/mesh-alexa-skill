@@ -26,6 +26,7 @@ public class I18NUtil {
 	 */
 	public static String i18n(Locale locale, String key, String... parameters) {
 		if (locale == null) {
+			log.debug("Locale not specified. Using default locale {" + DEFAULT_LOCALE + "}");
 			locale = DEFAULT_LOCALE;
 		}
 		log.info("Using locale: " + locale.getLanguage() + "_" + locale.getCountry());

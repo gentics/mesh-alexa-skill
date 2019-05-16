@@ -11,20 +11,19 @@ import com.gentics.mesh.alexa.dagger.config.SkillConfig;
 import com.gentics.mesh.alexa.server.SkillServerVerticle;
 
 import io.vertx.core.Vertx;
+import io.vertx.core.logging.Log4j2LogDelegateFactory;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
-import io.vertx.core.logging.SLF4JLogDelegateFactory;
 
 @Singleton
 public class GenticsSkill {
 
-	public static final String SHOP_NAME = "Gentics Fahrzeug Shop";
-	public static final String SHOP_NAME_PHONETIC = "<phoneme alphabet=\"ipa\" ph=\"dʒɛˈntɪcs\"></phoneme> Fahrzeug Shop";
+	public static final String GENTICS_PHONETIC = "<phoneme alphabet=\"ipa\" ph=\"dʒɛˈntɪcs\"></phoneme>";
 
 	private static Logger log;
 
 	static {
-		System.setProperty(LOGGER_DELEGATE_FACTORY_CLASS_NAME, SLF4JLogDelegateFactory.class.getName());
+		System.setProperty(LOGGER_DELEGATE_FACTORY_CLASS_NAME, Log4j2LogDelegateFactory.class.getName());
 	}
 
 	public static void main(String[] args) {

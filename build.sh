@@ -13,6 +13,6 @@ if [ "$1" == "native" ] ; then
   ./mvnw clean package -DskipTests -Pnative
   docker build -f Dockerfile.native -t gentics/mesh-alexa-skill-demo:native .
 else
-  ./mvnw clean package -DskipTests
+  ./mvnw clean package -DskipTests -Pshaded
   docker build -t gentics/mesh-alexa-skill-demo:latest .
 fi

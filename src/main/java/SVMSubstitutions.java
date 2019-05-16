@@ -1,6 +1,12 @@
 
-import com.oracle.svm.core.annotate.*;
-import org.graalvm.nativeimage.*;
+import org.graalvm.nativeimage.hosted.Feature;
+import org.graalvm.nativeimage.hosted.RuntimeReflection;
+
+import com.oracle.svm.core.annotate.Alias;
+import com.oracle.svm.core.annotate.AutomaticFeature;
+import com.oracle.svm.core.annotate.RecomputeFieldValue;
+import com.oracle.svm.core.annotate.Substitute;
+import com.oracle.svm.core.annotate.TargetClass;
 
 /**
  * This substitution allows the usage of platform specific code to do low level buffer related tasks

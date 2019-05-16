@@ -5,7 +5,6 @@ import java.io.IOException;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-import com.gentics.mesh.alexa.dagger.config.SkillConfig;
 import com.gentics.mesh.alexa.intent.SkillIntentHandler;
 
 import io.vertx.core.AbstractVerticle;
@@ -20,12 +19,10 @@ import io.vertx.ext.web.handler.BodyHandler;
 public class SkillServerVerticle extends AbstractVerticle {
 
 	private HttpServer server;
-	private final SkillConfig config;
 	private SkillIntentHandler intentHandler;
 
 	@Inject
-	public SkillServerVerticle(SkillConfig config, SkillIntentHandler intentHandler) {
-		this.config = config;
+	public SkillServerVerticle( SkillIntentHandler intentHandler) {
 		this.intentHandler = intentHandler;
 	}
 

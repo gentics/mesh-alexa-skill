@@ -9,14 +9,45 @@
 	<properties>
 		<vertx.version>3.7.0</vertx.version>
 		<mesh.version>0.32.0</mesh.version>
-		<graal.version>1.0.0-rc16</graal.version>
+		<graal.version>19.0.0</graal.version>
 		<dagger.version>2.22.1</dagger.version>
 		<mainClass>com.gentics.mesh.alexa.GenticsSkill</mainClass>
 	</properties>
 
 	<profiles>
 		<profile>
+			<id>shaded</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-shade-plugin</artifactId>
+						<version>3.1.1</version>
+						<executions>
+							<execution>
+								<phase>package</phase>
+								<goals>
+									<goal>shade</goal>
+								</goals>
+								<configuration>
+									<transformers>
+										<transformer
+											implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+											<mainClass>${mainClass}</mainClass>
+										</transformer>
+									</transformers>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+		<profile>
 			<id>native</id>
+			<properties>
+				<skipShaded>true</skipShaded>
+			</properties>
 			<build>
 				<plugins>
 					<plugin>
@@ -36,7 +67,9 @@
 							<mainClass>${mainClass}</mainClass>
 							<buildArgs>--enable-all-security-services
 								-H:+ReportUnsupportedElementsAtRuntime
+								-H:+ReportExceptionStackTraces
 								--no-fallback
+								-H:ResourceConfigurationFiles=${basedir}/svm/resources.json
 								-Duser.country=DE
 								-Duser.language=de
 								-Dfile.encoding=UTF-8
@@ -100,6 +133,23 @@
 			<version>${mesh.version}</version>
 		</dependency>
 
+		<!-- Logging -->
+		<dependency>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-api</artifactId>
+			<version>2.11.2</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-core</artifactId>
+			<version>2.11.2</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-slf4j-impl</artifactId>
+			<version>2.11.2</version>
+		</dependency>
+
 		<!-- Alexa SDK -->
 		<dependency>
 			<groupId>com.amazon.alexa</groupId>
@@ -152,27 +202,6 @@
 						<optional>true</optional>
 					</dependency>
 				</dependencies>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-shade-plugin</artifactId>
-				<version>3.1.1</version>
-				<executions>
-					<execution>
-						<phase>package</phase>
-						<goals>
-							<goal>shade</goal>
-						</goals>
-						<configuration>
-							<transformers>
-								<transformer
-									implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-									<mainClass>${mainClass}</mainClass>
-								</transformer>
-							</transformers>
-						</configuration>
-					</execution>
-				</executions>
 			</plugin>
 		</plugins>
 	</build>

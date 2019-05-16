@@ -1,7 +1,6 @@
 package com.gentics.mesh.alexa.intent.impl;
 
 import static com.amazon.ask.request.Predicates.intentName;
-import static com.gentics.mesh.alexa.GenticsSkill.SHOP_NAME;
 import static com.gentics.mesh.alexa.util.I18NUtil.i18n;
 
 import java.util.Locale;
@@ -47,7 +46,7 @@ public class ReserveVehicleIntent extends AbstractGenticsIntent {
 
 		return input.getResponseBuilder()
 			.withSpeech(speechText)
-			.withSimpleCard(SHOP_NAME, speechText)
+			.withSimpleCard(i18n(locale, "shop_name"), speechText)
 			.withReprompt(i18n(locale, "fallback_answer"))
 			.withShouldEndSession(false)
 			.build();
