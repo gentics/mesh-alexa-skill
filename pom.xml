@@ -9,81 +9,9 @@
 	<properties>
 		<vertx.version>3.7.0</vertx.version>
 		<mesh.version>0.32.0</mesh.version>
-		<graal.version>19.0.0</graal.version>
 		<dagger.version>2.22.1</dagger.version>
 		<mainClass>com.gentics.mesh.alexa.GenticsSkill</mainClass>
 	</properties>
-
-	<profiles>
-		<profile>
-			<id>shaded</id>
-			<build>
-				<plugins>
-					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-shade-plugin</artifactId>
-						<version>3.1.1</version>
-						<executions>
-							<execution>
-								<phase>package</phase>
-								<goals>
-									<goal>shade</goal>
-								</goals>
-								<configuration>
-									<transformers>
-										<transformer
-											implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-											<mainClass>${mainClass}</mainClass>
-										</transformer>
-									</transformers>
-								</configuration>
-							</execution>
-						</executions>
-					</plugin>
-				</plugins>
-			</build>
-		</profile>
-		<profile>
-			<id>native</id>
-			<properties>
-				<skipShaded>true</skipShaded>
-			</properties>
-			<build>
-				<plugins>
-					<plugin>
-						<groupId>com.oracle.substratevm</groupId>
-						<artifactId>native-image-maven-plugin</artifactId>
-						<version>${graal.version}</version>
-						<executions>
-							<execution>
-								<goals>
-									<goal>native-image</goal>
-								</goals>
-								<phase>package</phase>
-							</execution>
-						</executions>
-						<configuration>
-							<imageName>mesh-alexa-skill-server</imageName>
-							<mainClass>${mainClass}</mainClass>
-							<buildArgs>--enable-all-security-services
-								-H:+ReportUnsupportedElementsAtRuntime
-								-H:+ReportExceptionStackTraces
-								--no-fallback
-								-Duser.country=GB
-								-Duser.language=en
-								-H:ResourceConfigurationFiles=${basedir}/svm/resources.json
-								-Dlog4j2.jmx.disable=true
-								-Dfile.encoding=UTF-8
-								-H:+AddAllCharsets
-								--enable-https
-								--enable-http
-								--allow-incomplete-classpath</buildArgs>
-						</configuration>
-					</plugin>
-				</plugins>
-			</build>
-		</profile>
-	</profiles>
 
 	<dependencyManagement>
 		<dependencies>
@@ -106,14 +34,6 @@
 	</licenses>
 
 	<dependencies>
-		<!-- For graalvm -->
-		<dependency>
-			<groupId>com.oracle.substratevm</groupId>
-			<artifactId>svm-driver</artifactId>
-			<version>${graal.version}</version>
-			<scope>provided</scope>
-		</dependency>
-
 		<!-- Vert.x -->
 		<dependency>
 			<groupId>io.vertx</groupId>
@@ -132,12 +52,6 @@
 			<groupId>com.gentics.mesh</groupId>
 			<artifactId>mesh-rest-client</artifactId>
 			<version>${mesh.version}</version>
-			<exclusions>
-				<exclusion>
-					<groupId>org.raml</groupId>
-					<artifactId>raml-parser</artifactId>
-				</exclusion>
-			</exclusions>
 		</dependency>
 
 		<!-- Logging -->
@@ -225,6 +139,27 @@
 						<optional>true</optional>
 					</dependency>
 				</dependencies>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-shade-plugin</artifactId>
+				<version>3.1.1</version>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>shade</goal>
+						</goals>
+						<configuration>
+							<transformers>
+								<transformer
+									implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+									<mainClass>${mainClass}</mainClass>
+								</transformer>
+							</transformers>
+						</configuration>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
 	</build>
