@@ -71,10 +71,6 @@ public class SkillServerVerticle extends AbstractVerticle {
 			f.next();
 		});
 
-		router.route("/version").handler(rc -> {
-			rc.response().end("1.0");
-		});
-
 		router.route("/alexa").handler(rh -> {
 			JsonObject json = rh.getBodyAsJson();
 			try {
