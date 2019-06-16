@@ -2,18 +2,13 @@
 
 ## Example Phrases
 
-> Frag Gentics wieviele Tesla es noch gibt
+> `What is the price of a Tesla?`
 
-> Frag Gentics einen Tesla zu reservieren
+> `Reserve a Tesla`
 
-> Frag Gentics wieviel ein Tesla kostet
+> `Ask Gentics what is the price of a Tesla`
 
-## Topics
+## Links
 
-* Skill Pre-requirements
-* Setup
-* Testing
-* Dagger
-* Vert.x / ask-sdk
+* [Blogpost](https://getmesh.io/blog/voice-enabled-content/)
 
-## Native image
